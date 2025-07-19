@@ -12,8 +12,8 @@ namespace CQRSSolution.Infrastructure.AzureServiceBus
 {
     public class ServiceBusPublisherOptions
     {
-        public string ConnectionString { get; set; }
-        public string DefaultTopicOrQueueName { get; set; } // e.g., "ordersevents"
+        public required string ConnectionString { get; init; }
+        public required string DefaultTopicOrQueueName { get; init; } // e.g., "ordersevents"
     }
 
     public class ServiceBusPublisher : IEventBusPublisher, IAsyncDisposable

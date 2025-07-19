@@ -71,7 +71,7 @@ public static class DependencyInjection
             .AddDbContextCheck<ApplicationDbContext>("database", HealthStatus.Degraded,
                 new[] { "db", "infrastructure" })
             .AddAzureServiceBusQueue(
-                configuration.GetConnectionString("ServiceBusConnection"),
+                configuration.GetConnectionString("ServiceBusConnection") ?? string.Empty,
                 configuration["QueueName"] ?? "your-queue-name", // Read from config, fallback
                 name: "azure_service_bus_queue",
                 failureStatus: HealthStatus.Degraded,

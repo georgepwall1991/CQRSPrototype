@@ -32,7 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // 2. Register Application Layer services
 // MediatR - Scans the assembly where CreateOrderCommand is located (CQRSSolution.Application)
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
+builder.Services.AddMediatR(typeof(CreateOrderCommand).Assembly);
 
 // 3. Register Infrastructure Layer services
 // Repositories

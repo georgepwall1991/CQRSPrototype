@@ -31,7 +31,7 @@ public class OrderRepository : Repository<Order>, IOrderRepository
     /// </summary>
     /// <param name="order">The order to add.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    public async Task AddAsync(Order order, CancellationToken cancellationToken)
+    public override async Task AddAsync(Order order, CancellationToken cancellationToken)
     {
         await _context.Orders.AddAsync(order, cancellationToken);
         // Typically, SaveChangesAsync would be called by a Unit of Work or the command handler
@@ -44,7 +44,7 @@ public class OrderRepository : Repository<Order>, IOrderRepository
     /// <param name="orderId">The unique identifier of the order.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The order if found, including items; otherwise, null.</returns>
-    public async Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken)
+    public override async Task<Order?> GetByIdAsync(Guid orderId, CancellationToken cancellationToken)
     {
         return await _context.Orders
             .Include(o => o.OrderItems)
