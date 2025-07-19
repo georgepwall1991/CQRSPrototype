@@ -55,13 +55,12 @@ public class
             OrderId = order.OrderId,
             CustomerName = order.Customer?.Name ?? "N/A", // Handle potential null Customer
             OrderDate = order.OrderDate,
-            Status = order.Status,
+            Status = order.Status.ToString(),
             TotalAmount = order.TotalAmount,
             ItemCount = order.OrderItems?.Count ?? 0 // Handle potential null OrderItems
         }).ToList();
 
-        _logger.LogInformation("Retrieved {ItemCount} orders for page {PageNumber} with total count {TotalCount}",
-            orderSummaries.Count, request.PageNumber, totalCount);
+        _logger.LogInformation($"Retrieved {orderSummaries.Count} orders for page {request.PageNumber} with total count {totalCount}");
 
         return new PagedResultDto<OrderSummaryDto>(orderSummaries, totalCount, request.PageNumber, request.PageSize);
     }

@@ -39,12 +39,14 @@ namespace CQRSSolution.Infrastructure.AzureServiceBus
             _jsonSerializerOptions = jsonSerializerOptions;
         }
 
-        public async Task PublishAsync(object eventData, string eventTypeFullName, Guid messageId, CancellationToken cancellationToken = default)
+        public async Task PublishAsync<TEvent>(TEvent eventData, CancellationToken cancellationToken = default) where TEvent : class
         {
             if (eventData == null) throw new ArgumentNullException(nameof(eventData));
-            if (string.IsNullOrWhiteSpace(eventTypeFullName)) throw new ArgumentNullException(nameof(eventTypeFullName));
 
-            Type? eventType = Type.GetType(eventTypeFullName);
+            var eventTypeFullName = typeof(TEvent).FullName ?? typeof(TEvent).Name;
+            var messageId = Guid.NewGuid();
+
+            Type? eventType = typeof(TEvent);
             if (eventType == null)
             {
                 _logger.LogError("Could not resolve type {EventTypeFullName} during publishing.", eventTypeFullName);

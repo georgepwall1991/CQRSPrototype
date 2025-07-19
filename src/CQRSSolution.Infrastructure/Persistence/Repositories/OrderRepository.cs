@@ -10,15 +10,15 @@ namespace CQRSSolution.Infrastructure.Persistence.Repositories;
 /// <summary>
 ///     Provides an implementation of <see cref="IOrderRepository" /> using Entity Framework Core.
 /// </summary>
-public class OrderRepository : IOrderRepository
+public class OrderRepository : Repository<Order>, IOrderRepository
 {
-    private readonly IApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OrderRepository" /> class.
     /// </summary>
     /// <param name="context">The application database context.</param>
-    public OrderRepository(IApplicationDbContext context)
+    public OrderRepository(ApplicationDbContext context) : base(context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }

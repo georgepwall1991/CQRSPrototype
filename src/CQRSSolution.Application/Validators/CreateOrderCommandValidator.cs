@@ -1,4 +1,4 @@
-// Required for OrderItemDto
+// Required for CreateOrderItemDto
 
 using CQRSSolution.Application.Commands.CreateOrder;
 using FluentValidation;
@@ -22,6 +22,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .WithMessage("Order must contain at least one item."); // Redundant with NotEmpty, but good for clarity
 
         // Validate each item in the Items list
-        RuleForEach(x => x.Items).SetValidator(new OrderItemDtoValidator());
+        RuleForEach(x => x.Items).SetValidator(new CreateOrderItemDtoValidator());
     }
 }
