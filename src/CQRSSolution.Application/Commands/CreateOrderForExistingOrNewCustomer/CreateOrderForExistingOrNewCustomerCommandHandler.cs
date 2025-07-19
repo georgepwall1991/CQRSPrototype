@@ -144,6 +144,7 @@ public class CreateOrderForExistingOrNewCustomerCommandHandler
         var orderCreatedEvent = new OrderCreatedDomainEvent(
             order.OrderId,
             customer.Name,
+            order.TotalAmount,
             order.OrderDate);
 
         var outboxMessage = _outboxMessageFactory.CreateFromDomainEvent(orderCreatedEvent);

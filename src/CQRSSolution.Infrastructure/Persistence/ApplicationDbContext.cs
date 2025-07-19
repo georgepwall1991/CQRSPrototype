@@ -45,6 +45,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                 .IsRequired()
                 .HasMaxLength(200);
             entity.Property(o => o.Status)
+                .HasConversion<string>()
                 .HasMaxLength(50);
             entity.HasMany(o => o.OrderItems)
                 .WithOne(oi => oi.Order)
@@ -70,6 +71,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                 .IsRequired();
             entity.Property(om => om.Payload)
                 .IsRequired();
+            entity.Property(om => om.Attempts)
+                .HasDefaultValue(0);
         });
 
         modelBuilder.Entity<Customer>(entity =>

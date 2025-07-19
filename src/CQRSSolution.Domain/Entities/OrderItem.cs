@@ -13,7 +13,7 @@ public class OrderItem
     ///     Gets or sets the unique identifier for the order item.
     /// </summary>
     [Key]
-    public Guid Id { get; set; }
+    public Guid OrderItemId { get; set; }
 
     /// <summary>
     ///     Gets or sets the foreign key referencing the Order.
@@ -72,7 +72,7 @@ public class OrderItem
         if (unitPrice < 0)
             throw new ArgumentOutOfRangeException(nameof(unitPrice), "Unit price cannot be negative.");
 
-        Id = Guid.NewGuid();
+        OrderItemId = Guid.NewGuid();
         OrderId = orderId;
         ProductName = productName;
         Quantity = quantity;

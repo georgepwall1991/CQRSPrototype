@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using CQRSSolution.Domain.Entities;
+using CQRSSolution.Domain.Enums;
 
 namespace CQRSSolution.Application.Specifications.Orders;
 
@@ -64,8 +65,11 @@ public sealed class CustomerOrdersByStatusSpecification : BaseSpecification<Orde
     {
         if (string.IsNullOrWhiteSpace(status))
             return null;
-            
-        return order => order.Status == status;
+
+        if (!Enum.TryParse<OrderStatus>(status, true, out var parsedStatus))
+            return null;
+
+        return order => order.Status == parsedStatus;
     }
     
     private static Expression<Func<Order, bool>> CombineCriteria(
