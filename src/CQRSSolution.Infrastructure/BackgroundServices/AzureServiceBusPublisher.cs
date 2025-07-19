@@ -59,13 +59,13 @@ public class AzureServiceBusPublisher : IEventBusPublisher, IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    public async Task PublishAsync(object eventData, string eventType, Guid messageId, CancellationToken cancellationToken = default)
+    public async Task PublishAsync<TEvent>(TEvent eventData, CancellationToken cancellationToken = default) where TEvent : class
     {
         if (_serviceBusSender == null || _serviceBusClient == null || string.IsNullOrWhiteSpace(_queueName))
         {
             _logger.LogWarning(
                 "Azure Service Bus client, sender, or queue name not initialized (likely due to missing configuration). Skipping event publishing for event type {EventType}.",
-                eventType);
+                typeof(TEvent).FullName);
             return;
         }
 
@@ -75,28 +75,23 @@ public class AzureServiceBusPublisher : IEventBusPublisher, IAsyncDisposable
             var message = new ServiceBusMessage(eventJson)
             {
                 ContentType = "application/json",
-                Subject = eventType, // Using Subject to store the event type, useful for subscribers
+                Subject = typeof(TEvent).Name, // Using Subject to store the event type, useful for subscribers
                 MessageId = Guid.NewGuid().ToString() // Ensure unique message ID
             };
 
             _logger.LogInformation(
                 "Publishing event of type {EventType} to Azure Service Bus queue {QueueName}. MessageId: {MessageId}",
-                eventType, _queueName, message.MessageId);
+                typeof(TEvent).FullName, _queueName, message.MessageId);
             await _serviceBusSender.SendMessageAsync(message, cancellationToken);
             _logger.LogInformation(
-                "Successfully published event {EventType} with MessageId {MessageId} to queue {QueueName}.", eventType,
+                "Successfully published event {EventType} with MessageId {MessageId} to queue {QueueName}.", typeof(TEvent).FullName,
                 message.MessageId, _queueName);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error publishing event type {EventType} to Azure Service Bus queue {QueueName}.",
-                eventType, _queueName);
+                typeof(TEvent).FullName, _queueName);
             throw; // Re-throw to allow OutboxProcessorService to handle retry/failure logic
         }
-    }
-
-    public Task PublishAsync(object eventData, Type eventType, string messageId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
     }
 }

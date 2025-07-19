@@ -46,7 +46,7 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Order
             OrderId = order.OrderId,
             CustomerName = order.CustomerName,
             OrderDate = order.OrderDate,
-            Status = order.Status,
+            Status = order.Status.ToString(),
             TotalAmount = order.TotalAmount,
             Items = order.OrderItems.Select(oi => new OrderItemDetailsDto
             {

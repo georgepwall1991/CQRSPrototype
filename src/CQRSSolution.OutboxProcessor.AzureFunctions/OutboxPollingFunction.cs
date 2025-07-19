@@ -145,7 +145,7 @@ namespace CQRSSolution.OutboxProcessor.AzureFunctions
             _logger.LogInformation("Publishing event for message ID: {OutboxMessageId}, Attempt: {AttemptNumber}",
                 outboxMessage.Id, outboxMessage.Attempts + 1);
 
-            await _eventBusPublisher.PublishAsync(deserializedEvent, outboxMessage.Type, outboxMessage.Id);
+            await _eventBusPublisher.PublishAsync(deserializedEvent, CancellationToken.None);
             
             outboxMessage.ProcessedOnUtc = DateTime.UtcNow;
             outboxMessage.Error = null;
