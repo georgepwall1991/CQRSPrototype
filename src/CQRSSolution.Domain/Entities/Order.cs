@@ -16,7 +16,7 @@ public class Order
     ///     Gets or sets the unique identifier for the order.
     /// </summary>
     [Key]
-    public Guid Id { get; set; }
+    public Guid OrderId { get; set; }
 
     /// <summary>
     ///     Gets or sets the name of the customer who placed the order.
@@ -53,9 +53,9 @@ public class Order
     /// <param name="customerName">The name of the customer.</param>
     /// <param name="orderDate">The date the order was placed.</param>
     /// <param name="status">The initial status of the order.</param>
-    public Order(Guid customerId, string customerName, DateTime orderDate, string status)
+    public Order(Guid customerId, string customerName, DateTime orderDate, OrderStatus status)
     {
-        Id = Guid.NewGuid();
+        OrderId = Guid.NewGuid();
         CustomerId = customerId;
         CustomerName = customerName;
         OrderDate = orderDate;
@@ -79,7 +79,7 @@ public class Order
     /// </summary>
     public Order()
     {
-        Id = Guid.NewGuid();
+        OrderId = Guid.NewGuid();
         OrderDate = DateTime.UtcNow;
         Status = OrderStatus.Pending; // Use Enum directly
         OrderItems = new List<OrderItem>();
@@ -102,7 +102,7 @@ public class Order
         if (unitPrice < 0)
             throw new ArgumentException("Unit price cannot be negative.", nameof(unitPrice));
 
-        var orderItem = new OrderItem(Id, productName, quantity, unitPrice);
+        var orderItem = new OrderItem(OrderId, productName, quantity, unitPrice);
         OrderItems.Add(orderItem);
         RecalculateTotalAmount();
     }

@@ -1,5 +1,6 @@
 using CQRSSolution.Application.DTOs;
 using CQRSSolution.Domain.Entities;
+using CQRSSolution.Domain.Enums;
 
 namespace CQRSSolution.Application.Factories;
 
@@ -8,7 +9,7 @@ namespace CQRSSolution.Application.Factories;
 /// </summary>
 public class OrderFactory : IOrderFactory
 {
-    private const string DefaultOrderStatus = "Pending";
+    private const OrderStatus DefaultOrderStatus = OrderStatus.Pending;
 
     /// <summary>
     ///     Creates a new <see cref="Order" /> instance with its associated items.

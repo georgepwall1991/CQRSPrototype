@@ -48,7 +48,7 @@ public class OrderRepository : IOrderRepository
     {
         return await _context.Orders
             .Include(o => o.OrderItems)
-            .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
+            .FirstOrDefaultAsync(o => o.OrderId == orderId, cancellationToken);
     }
 
     /// <inheritdoc />

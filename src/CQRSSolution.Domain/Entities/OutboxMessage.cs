@@ -44,6 +44,11 @@ namespace CQRSSolution.Domain.Entities
         public string? Error { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of processing attempts made for this message.
+        /// </summary>
+        public int Attempts { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="OutboxMessage"/> class.
         /// </summary>
         public OutboxMessage()

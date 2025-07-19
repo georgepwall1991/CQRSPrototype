@@ -62,7 +62,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             var order = new Order
             {
                 CustomerName = command.CustomerName,
-                // OrderDate, Status, and Id are set in Order constructor
+                // OrderDate, Status, and OrderId are set in Order constructor
             };
 
             foreach (var itemDto in command.Items)
@@ -77,7 +77,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             // and Order is being added.
 
             var orderCreatedEvent = new OrderCreatedDomainEvent(
-                order.Id,
+                order.OrderId,
                 order.CustomerName,
                 order.TotalAmount,
                 order.OrderDate
@@ -94,9 +94,9 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
             await _dbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            _logger.LogInformation("Order {OrderId} created successfully for customer {CustomerName}.", order.Id, order.CustomerName);
+            _logger.LogInformation("Order {OrderId} created successfully for customer {CustomerName}.", order.OrderId, order.CustomerName);
 
-            return order.Id;
+            return order.OrderId;
         }
         catch (Exception ex)
         {
