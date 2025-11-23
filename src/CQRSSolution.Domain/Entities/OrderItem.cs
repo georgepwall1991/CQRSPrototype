@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CQRSSolution.Domain.Entities;
 
@@ -12,38 +10,33 @@ public class OrderItem
     /// <summary>
     ///     Gets or sets the unique identifier for the order item.
     /// </summary>
-    [Key]
-    public Guid OrderItemId { get; set; }
+    public Guid OrderItemId { get; private set; }
 
     /// <summary>
     ///     Gets or sets the foreign key referencing the Order.
     /// </summary>
-    public Guid OrderId { get; set; }
+    public Guid OrderId { get; private set; }
 
     /// <summary>
     ///     Gets or sets the navigation property to the Order.
     ///     This is virtual to enable lazy loading by EF Core.
     /// </summary>
-    [ForeignKey(nameof(OrderId))]
-    public virtual Order? Order { get; set; }
+    public virtual Order? Order { get; private set; }
 
     /// <summary>
     ///     Gets or sets the name of the product.
     /// </summary>
-    [Required]
-    [MaxLength(200)]
-    public string ProductName { get; set; }
+    public string ProductName { get; private set; }
 
     /// <summary>
     ///     Gets or sets the quantity of the product.
     /// </summary>
-    public int Quantity { get; set; }
+    public int Quantity { get; private set; }
 
     /// <summary>
     ///     Gets or sets the price per unit of the product.
     /// </summary>
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal UnitPrice { get; set; }
+    public decimal UnitPrice { get; private set; }
 
     /// <summary>
     ///     Private parameterless constructor for EF Core and deserialization.

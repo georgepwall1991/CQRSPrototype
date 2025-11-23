@@ -38,56 +38,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Order>(entity =>
-        {
-            entity.HasKey(o => o.OrderId);
-            entity.Property(o => o.CustomerName)
-                .IsRequired()
-                .HasMaxLength(200);
-            entity.Property(o => o.Status)
-                .HasConversion<string>()
-                .HasMaxLength(50);
-            entity.HasMany(o => o.OrderItems)
-                .WithOne(oi => oi.Order)
-                .HasForeignKey(oi => oi.OrderId);
-            entity.HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId)
-                .IsRequired();
-        });
-
-        modelBuilder.Entity<OrderItem>(entity =>
-        {
-            entity.HasKey(oi => oi.OrderItemId);
-            entity.Property(oi => oi.ProductName)
-                .IsRequired()
-                .HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<OutboxMessage>(entity =>
-        {
-            entity.HasKey(om => om.Id);
-            entity.Property(om => om.Type)
-                .IsRequired();
-            entity.Property(om => om.Payload)
-                .IsRequired();
-            entity.Property(om => om.Attempts)
-                .HasDefaultValue(0);
-        });
-
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.HasKey(c => c.CustomerId);
-            entity.Property(c => c.Name)
-                .IsRequired()
-                .HasMaxLength(200);
-            entity.Property(c => c.Email)
-                .IsRequired()
-                .HasMaxLength(254);
-            entity.HasIndex(c => c.Email)
-                .IsUnique();
-        });
-
         // Apply all entity configurations from the current assembly
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 

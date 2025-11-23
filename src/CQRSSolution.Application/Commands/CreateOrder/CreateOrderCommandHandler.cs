@@ -1,13 +1,16 @@
 using MediatR;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using CQRSSolution.Application.DTOs;
+using CQRSSolution.Application.Factories;
 using CQRSSolution.Application.Interfaces;
 using CQRSSolution.Domain.Entities;
 using CQRSSolution.Domain.DomainEvents;
 using Microsoft.Extensions.Logging;
-using System.Linq; // Required for .Any() and .Sum()
 
 namespace CQRSSolution.Application.Commands.CreateOrder;
 
@@ -19,18 +22,21 @@ namespace CQRSSolution.Application.Commands.CreateOrder;
 /// </summary>
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Guid>
 {
-    private readonly IApplicationDbContext _dbContext;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IOrderFactory _orderFactory;
     private readonly ILogger<CreateOrderCommandHandler> _logger;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateOrderCommandHandler" /> class.
     /// </summary>
-    /// <param name="dbContext">The application database context.</param>
+    /// <param name="unitOfWork">The unit of work for managing transactions and repositories.</param>
+    /// <param name="orderFactory">The factory for creating orders.</param>
     /// <param name="logger">The logger.</param>
-    public CreateOrderCommandHandler(IApplicationDbContext dbContext, ILogger<CreateOrderCommandHandler> logger)
+    public CreateOrderCommandHandler(IUnitOfWork unitOfWork, IOrderFactory orderFactory, ILogger<CreateOrderCommandHandler> logger)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _orderFactory = orderFactory ?? throw new ArgumentNullException(nameof(orderFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -45,37 +51,40 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
     /// <param name="command">The <see cref="CreateOrderCommand" /> containing order details.</param>
     /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
     /// <returns>The ID of the newly created order.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if critical operations fail, like event type resolution.</exception>
-    /// <exception cref="Exception">Rethrows exceptions from database operations after attempting a rollback.</exception>
     public async Task<Guid> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        if (command == null) throw new ArgumentNullException(nameof(command));
-        if (string.IsNullOrWhiteSpace(command.CustomerName))
-            throw new ArgumentException("Customer name is required.", nameof(command.CustomerName));
-        if (command.Items == null || !command.Items.Any())
-            throw new ArgumentException("Order must contain at least one item.", nameof(command.Items));
+        // Validation is handled by the ValidationBehavior pipeline.
 
-        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
         {
-            var order = new Order
+            // 1. Get or Create Customer
+            var customer = await _unitOfWork.Customers.GetByEmailAsync(command.CustomerEmail, cancellationToken);
+            if (customer == null)
             {
-                CustomerName = command.CustomerName,
-                // OrderDate, Status, and OrderId are set in Order constructor
-            };
-
-            foreach (var itemDto in command.Items)
-            {
-                // OrderItem constructor performs its own validation for ProductName, quantity, and unit price.
-                order.AddOrderItem(itemDto.ProductName, itemDto.Quantity, itemDto.UnitPrice);
+                customer = Customer.Create(command.CustomerName, command.CustomerEmail);
+                await _unitOfWork.Customers.AddAsync(customer, cancellationToken);
+                _logger.LogInformation("Creating new customer: {CustomerName} ({CustomerEmail})", command.CustomerName, command.CustomerEmail);
             }
-            // TotalAmount is calculated by AddOrderItem and RecalculateTotalAmount
+            else
+            {
+                _logger.LogInformation("Found existing customer: {CustomerName} ({CustomerEmail})", customer.Name, customer.Email);
+            }
 
-            _dbContext.Orders.Add(order);
-            // OrderItems are implicitly added by EF Core as they are part of the Order.OrderItems collection
-            // and Order is being added.
+            // 2. Create Order
+            var orderItemsDto = command.Items.Select(i => new OrderItemDto
+            {
+                ProductName = i.ProductName,
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice
+            }).ToList();
 
+            var order = _orderFactory.CreateNewOrder(customer, orderItemsDto);
+
+            await _unitOfWork.Orders.AddAsync(order, cancellationToken);
+
+            // 3. Create Outbox Message
             var orderCreatedEvent = new OrderCreatedDomainEvent(
                 order.OrderId,
                 order.CustomerName,
@@ -83,16 +92,16 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
                 order.OrderDate
             );
 
-            var outboxMessage = new OutboxMessage
-            {
-                // Id and OccurredOnUtc are set in OutboxMessage constructor
-                Type = orderCreatedEvent.GetType().FullName ?? nameof(OrderCreatedDomainEvent),
-                Payload = JsonSerializer.Serialize(orderCreatedEvent, _jsonSerializerOptions)
-            };
-            _dbContext.OutboxMessages.Add(outboxMessage);
+            var outboxMessage = new OutboxMessage(
+                orderCreatedEvent.GetType().FullName ?? nameof(OrderCreatedDomainEvent),
+                JsonSerializer.Serialize(orderCreatedEvent, _jsonSerializerOptions)
+            );
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
+            await _unitOfWork.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
+
+            // 4. Save and Commit
+            await _unitOfWork.CompleteAsync(cancellationToken);
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
             _logger.LogInformation("Order {OrderId} created successfully for customer {CustomerName}.", order.OrderId, order.CustomerName);
 
@@ -100,9 +109,9 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Gui
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync(cancellationToken);
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             _logger.LogError(ex, "Error creating order for customer {CustomerName}. Details: {ErrorMessage}", command.CustomerName, ex.Message);
-            throw; // Re-throw to allow higher layers (e.g., API) to handle it.
+            throw;
         }
     }
 }

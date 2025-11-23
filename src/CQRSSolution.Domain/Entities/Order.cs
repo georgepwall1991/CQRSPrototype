@@ -1,8 +1,6 @@
 using CQRSSolution.Domain.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace CQRSSolution.Domain.Entities;
@@ -15,36 +13,32 @@ public class Order
     /// <summary>
     ///     Gets or sets the unique identifier for the order.
     /// </summary>
-    [Key]
-    public Guid OrderId { get; set; }
+    public Guid OrderId { get; private set; }
 
     /// <summary>
     ///     Gets or sets the name of the customer who placed the order.
     /// </summary>
-    [Required]
-    [MaxLength(200)]
-    public string CustomerName { get; set; } = string.Empty;
+    public string CustomerName { get; private set; } = string.Empty;
 
     /// <summary>
     ///     Gets or sets the date and time when the order was placed.
     /// </summary>
-    public DateTime OrderDate { get; set; }
+    public DateTime OrderDate { get; private set; }
 
     /// <summary>
     ///     Gets or sets the total amount for the order.
     /// </summary>
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal TotalAmount { get; set; }
+    public decimal TotalAmount { get; private set; }
 
     /// <summary>
     ///     Gets or sets the current status of the order.
     /// </summary>
-    public OrderStatus Status { get; set; }
+    public OrderStatus Status { get; private set; }
 
     /// <summary>
     ///     Gets or sets the collection of items included in this order.
     /// </summary>
-    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Order" /> class.
@@ -71,13 +65,14 @@ public class Order
     /// <summary>
     ///     Gets or sets the customer who placed the order.
     /// </summary>
-    public virtual Customer? Customer { get; set; } // Keep setter for EF Core relationship fixup
+    public virtual Customer? Customer { get; private set; } // Keep setter for EF Core relationship fixup? EF can use private setter.
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Order"/> class.
     ///     Sets default values for new orders.
+    ///     Required by EF Core.
     /// </summary>
-    public Order()
+    protected Order()
     {
         OrderId = Guid.NewGuid();
         OrderDate = DateTime.UtcNow;

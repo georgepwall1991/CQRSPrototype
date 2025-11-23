@@ -1,3 +1,4 @@
+using CQRSSolution.Application.Behaviors;
 using CQRSSolution.Application.Commands.CreateOrder;
 using CQRSSolution.Application.Factories;
 using CQRSSolution.Application.Validators;
@@ -24,6 +25,9 @@ public static class DependencyInjection
 
         // Register FluentValidation validators - scans the current assembly for validators
         services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
+
+        // Register Validation Behavior
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         // Register Factories
         services.AddScoped<IOrderFactory, OrderFactory>();

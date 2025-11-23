@@ -20,6 +20,14 @@ public class CreateOrderCommand : IRequest<Guid>
     public string CustomerName { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the email of the customer.
+    /// </summary>
+    [Required(ErrorMessage = "Customer email is required.")]
+    [MaxLength(254, ErrorMessage = "Customer email cannot exceed 254 characters.")]
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
+    public string CustomerEmail { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets the list of items to be included in the order.
     /// Must contain at least one item.
     /// </summary>

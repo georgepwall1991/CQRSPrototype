@@ -98,9 +98,9 @@ public class OutboxProcessorService : BackgroundService
                 if (eventType == null)
                 {
                     _logger.LogError("Could not find type {EventType} for outbox message {MessageId}. Skipping.", message.Type, message.Id);
-                    message.Error = $"Type {message.Type} not found.";
+                    message.RecordFailure($"Type {message.Type} not found.");
                     // Optionally mark as processed if it's an unrecoverable type issue, or leave for manual inspection
-                    // message.ProcessedOnUtc = DateTime.UtcNow; 
+                    // message.MarkAsProcessed(); 
                 }
                 else
                 {
@@ -108,19 +108,19 @@ public class OutboxProcessorService : BackgroundService
                     if (deserializedEvent == null)
                     {
                         _logger.LogError("Failed to deserialize payload for outbox message {MessageId} of type {EventType}. Payload: {Payload}", message.Id, message.Type, message.Payload);
-                        message.Error = "Failed to deserialize payload.";
+                        message.RecordFailure("Failed to deserialize payload.");
                     }
                 }
             }
             catch (JsonException jsonEx)
             {
                 _logger.LogError(jsonEx, "JSON Deserialization error for outbox message {MessageId} of type {EventType}. Payload: {Payload}", message.Id, message.Type, message.Payload);
-                message.Error = "JSON Deserialization error: " + jsonEx.Message;
+                message.RecordFailure("JSON Deserialization error: " + jsonEx.Message);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error during deserialization for outbox message {MessageId} of type {EventType}.", message.Id, message.Type);
-                message.Error = "Unexpected deserialization error: " + ex.Message;
+                message.RecordFailure("Unexpected deserialization error: " + ex.Message);
             }
 
             if (deserializedEvent != null)
@@ -129,26 +129,32 @@ public class OutboxProcessorService : BackgroundService
                 {
                     _logger.LogInformation("Publishing event of type {EventType} from outbox message {MessageId}.", message.Type, message.Id);
                     await eventBusPublisher.PublishAsync(deserializedEvent, cancellationToken);
-                    message.ProcessedOnUtc = DateTime.UtcNow;
-                    message.Error = null; // Clear previous errors if any
+                    message.MarkAsProcessed();
                     _logger.LogInformation("Successfully published event from outbox message {MessageId} and marked as processed.", message.Id);
                 }
                 catch (Exception ex)
                 {
                     // Handle transient or persistent errors from event bus publisher
                     _logger.LogError(ex, "Error publishing event from outbox message {MessageId} of type {EventType}.", message.Id, message.Type);
-                    message.Error = "Publishing error: " + ex.Message;
+                    message.RecordFailure("Publishing error: " + ex.Message);
                     // Implement retry logic or dead-lettering if necessary for the event bus publisher itself.
                     // For now, we'll update the message with the error and it will be retried later.
                 }
             }
+            else
+            {
+                // Deserialization failed, record failure to prevent infinite retry loops on bad data?
+                // Already recorded failure in catch blocks above, but ensure we don't retry indefinitely if error is permanent.
+                // For now, rely on RecordFailure called in catch blocks.
+            }
             
             // Update the outbox message (e.g., set ProcessedOnUtc or Error)
             await outboxRepository.UpdateAsync(message, cancellationToken);
+            
+            // Save changes immediately to minimize risk of duplicate processing in case of crash
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
         
-        // Save all changes made to outbox messages in this batch
-        await dbContext.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("Finished processing batch of {MessageCount} outbox messages.", messages.Count);
     }
 

@@ -19,32 +19,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// 1. Configure DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-        }));
+// Register Application Layer services
+builder.Services.AddApplicationServices();
 
-// 2. Register Application Layer services
-// MediatR - Scans the assembly where CreateOrderCommand is located (CQRSSolution.Application)
-builder.Services.AddMediatR(typeof(CreateOrderCommand).Assembly);
-
-// 3. Register Infrastructure Layer services
-// Repositories
-builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOutboxMessageRepository, OutboxMessageRepository>();
-
-// Event Bus Publisher (Placeholder)
-builder.Services.AddSingleton<IEventBusPublisher, EventBusPublisher>(); // Singleton if stateless, Scoped if it has scoped dependencies
-
-// Background Service for Outbox Processing
-builder.Services.AddHostedService<OutboxProcessorService>();
+// Register Infrastructure Layer services
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // API Controllers
 builder.Services.AddControllers();
@@ -90,3 +69,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

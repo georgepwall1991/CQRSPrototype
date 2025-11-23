@@ -38,13 +38,10 @@ public class OutboxMessageFactory : IOutboxMessageFactory
             throw new InvalidOperationException(
                 $"Could not determine the full name for event type {domainEvent.GetType().Name}.");
 
-        return new OutboxMessage
-        {
-            Id = Guid.NewGuid(),
-            OccurredOnUtc = DateTime.UtcNow,
-            Type = eventTypeFullName,
-            Payload = JsonSerializer.Serialize(domainEvent, domainEvent.GetType(), _jsonSerializerOptions)
-        };
+        return new OutboxMessage(
+            eventTypeFullName,
+            JsonSerializer.Serialize(domainEvent, domainEvent.GetType(), _jsonSerializerOptions)
+        );
     }
 }
 
