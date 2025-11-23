@@ -128,7 +128,7 @@ namespace CQRSSolution.OutboxProcessor.AzureFunctions
             {
                 _logger.LogError("Could not resolve type {EventTypeFqn} for outbox message ID {OutboxMessageId}.",
                     outboxMessage.Type, outboxMessage.Id);
-                outboxMessage.Error = $"Type '{outboxMessage.Type}' not found.";
+                outboxMessage.RecordFailure($"Type '{outboxMessage.Type}' not found.");
                 return false;
             }
 
@@ -138,7 +138,7 @@ namespace CQRSSolution.OutboxProcessor.AzureFunctions
             {
                 _logger.LogError("Failed to deserialize payload for outbox message ID {OutboxMessageId}.",
                     outboxMessage.Id);
-                outboxMessage.Error = "Payload deserialization failed.";
+                outboxMessage.RecordFailure("Payload deserialization failed.");
                 return false;
             }
 
@@ -147,8 +147,7 @@ namespace CQRSSolution.OutboxProcessor.AzureFunctions
 
             await _eventBusPublisher.PublishAsync(deserializedEvent, CancellationToken.None);
             
-            outboxMessage.ProcessedOnUtc = DateTime.UtcNow;
-            outboxMessage.Error = null;
+            outboxMessage.MarkAsProcessed();
             
             _logger.LogInformation("Successfully published event for message ID: {OutboxMessageId}.",
                 outboxMessage.Id);
@@ -167,7 +166,7 @@ namespace CQRSSolution.OutboxProcessor.AzureFunctions
             _logger.LogError(exception, "Error processing outbox message ID {OutboxMessageId}, Attempt {AttemptNumber}.",
                 outboxMessage.Id, outboxMessage.Attempts + 1);
             
-            outboxMessage.Error = exception.Message;
+            outboxMessage.RecordFailure(exception.Message);
             
             return Task.CompletedTask;
         }
@@ -180,8 +179,6 @@ namespace CQRSSolution.OutboxProcessor.AzureFunctions
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task UpdateMessageStateAsync(OutboxMessage outboxMessage, bool publishedSuccessfully)
         {
-            outboxMessage.Attempts++;
-            
             if (outboxMessage.Attempts >= _maxRetries && !publishedSuccessfully)
             {
                 _logger.LogWarning("Message ID {OutboxMessageId} has reached max retries ({MaxRetries}).",
