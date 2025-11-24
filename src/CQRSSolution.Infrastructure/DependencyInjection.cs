@@ -67,15 +67,20 @@ public static class DependencyInjection
         services.AddHostedService<OutboxProcessorService>();
 
         // Add Health Checks specific to Infrastructure
-        services.AddHealthChecks()
+        var healthChecksBuilder = services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("database", HealthStatus.Degraded,
-                new[] { "db", "infrastructure" })
-            .AddAzureServiceBusQueue(
-                configuration.GetConnectionString("ServiceBusConnection") ?? string.Empty,
+                new[] { "db", "infrastructure" });
+
+        var sbConnectionString = configuration.GetConnectionString("ServiceBusConnection");
+        if (!string.IsNullOrEmpty(sbConnectionString))
+        {
+            healthChecksBuilder.AddAzureServiceBusQueue(
+                sbConnectionString,
                 configuration["QueueName"] ?? "your-queue-name", // Read from config, fallback
                 name: "azure_service_bus_queue",
                 failureStatus: HealthStatus.Degraded,
                 tags: new[] { "messaging", "infrastructure" });
+        }
 
         return services;
     }
