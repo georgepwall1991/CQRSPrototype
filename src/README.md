@@ -32,7 +32,7 @@ The solution is organized into the following projects:
 
 ## 🛠 Technologies
 
-- **.NET 8** (or latest supported version)
+- **.NET 10** (or latest supported version)
 - **Entity Framework Core** (SQL Server)
 - **MediatR**
 - **Azure Service Bus**
