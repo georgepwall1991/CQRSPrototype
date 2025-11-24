@@ -2,8 +2,6 @@ using CQRSSolution.Application.Interfaces;
 using CQRSSolution.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CQRSSolution.Infrastructure.Persistence;
 

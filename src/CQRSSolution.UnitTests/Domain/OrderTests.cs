@@ -1,8 +1,6 @@
 using CQRSSolution.Domain.Entities;
 using CQRSSolution.Domain.Enums;
 using FluentAssertions;
-using System;
-using Xunit;
 
 namespace CQRSSolution.UnitTests.Domain;
 

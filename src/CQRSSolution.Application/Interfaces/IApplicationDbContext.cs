@@ -1,8 +1,6 @@
 using CQRSSolution.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Threading;
-using System.Threading.Tasks;
 
 // For DatabaseFacade
 

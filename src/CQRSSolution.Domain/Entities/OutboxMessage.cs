@@ -1,5 +1,3 @@
-using System;
-
 namespace CQRSSolution.Domain.Entities
 {
     /// <summary>

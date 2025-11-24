@@ -1,19 +1,7 @@
-using CQRSSolution.Api;
 using CQRSSolution.Application;
-using CQRSSolution.Application.Commands.CreateOrder;
-using CQRSSolution.Application.Interfaces;
 using CQRSSolution.Infrastructure;
-using CQRSSolution.Infrastructure.AzureServiceBus;
-using CQRSSolution.Infrastructure.BackgroundServices;
-using CQRSSolution.Infrastructure.Persistence;
-using CQRSSolution.Infrastructure.Persistence.Repositories;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
         Title = "CQRSSolution API",

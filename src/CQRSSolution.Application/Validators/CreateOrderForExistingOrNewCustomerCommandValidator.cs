@@ -1,5 +1,4 @@
 using CQRSSolution.Application.Commands.CreateOrderForExistingOrNewCustomer;
-using CQRSSolution.Application.DTOs;
 using FluentValidation;
 
 namespace CQRSSolution.Application.Validators;

@@ -1,6 +1,4 @@
 using MediatR;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CQRSSolution.Application.DTOs; // For CreateOrderItemDto
 

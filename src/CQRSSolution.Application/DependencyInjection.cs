@@ -21,7 +21,10 @@ public static class DependencyInjection
     public static void AddApplicationServices(this IServiceCollection services)
     {
         // Register MediatR - scans the current assembly for handlers and requests
-        services.AddMediatR(typeof(CreateOrderCommand).Assembly);
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly);
+        });
 
         // Register FluentValidation validators - scans the current assembly for validators
         services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
@@ -32,7 +35,7 @@ public static class DependencyInjection
         // Register Factories
         services.AddScoped<IOrderFactory, OrderFactory>();
         services.AddScoped<IOutboxMessageFactory, OutboxMessageFactory>();
-        // If OutboxMessageFactory needs specific JsonSerializerOptions, 
+        // If OutboxMessageFactory needs specific JsonSerializerOptions,
         // you could register JsonSerializerOptions or use IOptions<JsonSerializerOptions>
         // For now; it uses its default or a constructor that takes options.
 

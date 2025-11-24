@@ -1,4 +1,3 @@
-using CQRSSolution.Api;
 using CQRSSolution.Application.Commands.CreateOrder;
 using CQRSSolution.Application.DTOs;
 using FluentAssertions;

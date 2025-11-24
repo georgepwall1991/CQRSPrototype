@@ -2,11 +2,8 @@ using Azure.Messaging.ServiceBus;
 using CQRSSolution.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Concurrent;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CQRSSolution.Infrastructure.AzureServiceBus
 {

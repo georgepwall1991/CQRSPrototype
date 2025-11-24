@@ -1,14 +1,8 @@
 using System.Text.Json;
 using CQRSSolution.Application.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Reflection;
 
 namespace CQRSSolution.Infrastructure.BackgroundServices;
 

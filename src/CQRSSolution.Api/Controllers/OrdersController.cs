@@ -4,10 +4,6 @@ using CQRSSolution.Application.Queries.GetCustomerOrderById;
 using CQRSSolution.Application.Queries.GetCustomerOrdersByStatus;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
 
 namespace CQRSSolution.Api.Controllers;
 

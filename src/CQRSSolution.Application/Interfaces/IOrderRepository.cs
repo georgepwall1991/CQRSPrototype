@@ -1,7 +1,4 @@
 using CQRSSolution.Domain.Entities;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CQRSSolution.Application.Interfaces;
 
