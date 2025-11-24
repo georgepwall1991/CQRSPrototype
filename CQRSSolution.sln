@@ -1,15 +1,14 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{214A799A-CA25-4A22-88A3-2EA3DB98284B}"
 	ProjectSection(SolutionItems) = preProject
-		..\API_DOCUMENTATION.md = ..\API_DOCUMENTATION.md
-		..\ARCHITECTURE.md = ..\ARCHITECTURE.md
-		..\OUTBOX_PATTERN_IMPROVEMENTS.md = ..\OUTBOX_PATTERN_IMPROVEMENTS.md
-		..\README.md = ..\README.md
-		IMPROVEMENT_PLAN.md = IMPROVEMENT_PLAN.md
+		API_DOCUMENTATION.md = API_DOCUMENTATION.md
+		ARCHITECTURE.md = ARCHITECTURE.md
+		OUTBOX_PATTERN_IMPROVEMENTS.md = OUTBOX_PATTERN_IMPROVEMENTS.md
+		README.md = README.md
+		src\IMPROVEMENT_PLAN.md = src\IMPROVEMENT_PLAN.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".git", ".git", "{A5760606-ECFA-439C-813A-64F5E84C0155}"
@@ -19,21 +18,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".git", ".git", "{A5760606-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Api", "CQRSSolution.Api\CQRSSolution.Api.csproj", "{0392C6BD-5DF2-4742-90D9-E5EE8C9E0952}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Api", "src\CQRSSolution.Api\CQRSSolution.Api.csproj", "{0392C6BD-5DF2-4742-90D9-E5EE8C9E0952}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Application", "CQRSSolution.Application\CQRSSolution.Application.csproj", "{78FCE156-0738-48ED-9BB2-803E2B4F6E47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Application", "src\CQRSSolution.Application\CQRSSolution.Application.csproj", "{78FCE156-0738-48ED-9BB2-803E2B4F6E47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Domain", "CQRSSolution.Domain\CQRSSolution.Domain.csproj", "{F475A99D-C3C8-4842-BBDB-8D52F31D6BD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Domain", "src\CQRSSolution.Domain\CQRSSolution.Domain.csproj", "{F475A99D-C3C8-4842-BBDB-8D52F31D6BD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Infrastructure", "CQRSSolution.Infrastructure\CQRSSolution.Infrastructure.csproj", "{0ECF65DD-C39F-44E3-8E26-2C8F70540D8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.Infrastructure", "src\CQRSSolution.Infrastructure\CQRSSolution.Infrastructure.csproj", "{0ECF65DD-C39F-44E3-8E26-2C8F70540D8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.OutboxProcessor.AzureFunctions", "CQRSSolution.OutboxProcessor.AzureFunctions\CQRSSolution.OutboxProcessor.AzureFunctions.csproj", "{7083EECC-AE57-405B-8AC7-35C574508FDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.OutboxProcessor.AzureFunctions", "src\CQRSSolution.OutboxProcessor.AzureFunctions\CQRSSolution.OutboxProcessor.AzureFunctions.csproj", "{7083EECC-AE57-405B-8AC7-35C574508FDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.IntegrationTests", "CQRSSolution.IntegrationTests\CQRSSolution.IntegrationTests.csproj", "{3D3A7DDD-982F-4414-A19C-19A2B39DFF6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.IntegrationTests", "tests\CQRSSolution.IntegrationTests\CQRSSolution.IntegrationTests.csproj", "{3D3A7DDD-982F-4414-A19C-19A2B39DFF6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.UnitTests", "CQRSSolution.UnitTests\CQRSSolution.UnitTests.csproj", "{DC6028AA-0DE1-4D83-B21E-61FDEE343CCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSSolution.UnitTests", "tests\CQRSSolution.UnitTests\CQRSSolution.UnitTests.csproj", "{DC6028AA-0DE1-4D83-B21E-61FDEE343CCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -22,13 +22,17 @@ A robust .NET solution demonstrating **Clean Architecture** and **CQRS** (Comman
 
 ## 🏗 Architecture
 
-The solution is organized into the following projects:
+The solution is organized into the following folder structure:
 
-- **`CQRSSolution.Api`**: The entry point (REST API). Handles HTTP requests and dispatches commands/queries.
-- **`CQRSSolution.Application`**: Contains business logic, commands, queries, handlers, validators, and interfaces. Depends only on the Domain.
-- **`CQRSSolution.Domain`**: The core of the solution. Contains entities, value objects, enums, and domain events. No external dependencies.
-- **`CQRSSolution.Infrastructure`**: Implements interfaces defined in Application. Handles data access (EF Core), messaging (Azure Service Bus), and background processing.
-- **`CQRSSolution.OutboxProcessor.AzureFunctions`**: A separate Azure Functions project for processing the Outbox table in a serverless environment.
+- **`src/`**: Contains the application source code.
+  - **`CQRSSolution.Api`**: The entry point (REST API). Handles HTTP requests and dispatches commands/queries.
+  - **`CQRSSolution.Application`**: Contains business logic, commands, queries, handlers, validators, and interfaces. Depends only on the Domain.
+  - **`CQRSSolution.Domain`**: The core of the solution. Contains entities, value objects, enums, and domain events. No external dependencies.
+  - **`CQRSSolution.Infrastructure`**: Implements interfaces defined in Application. Handles data access (EF Core), messaging (Azure Service Bus), and background processing.
+  - **`CQRSSolution.OutboxProcessor.AzureFunctions`**: A separate Azure Functions project for processing the Outbox table in a serverless environment.
+- **`tests/`**: Contains the test projects.
+  - **`CQRSSolution.UnitTests`**: Unit tests for domain and application logic.
+  - **`CQRSSolution.IntegrationTests`**: End-to-end integration tests using `WebApplicationFactory`.
 
 ## 🛠 Technologies
 
@@ -53,7 +57,6 @@ The solution is organized into the following projects:
 You can run the entire solution (API + SQL Server + Outbox Processor) using Docker Compose:
 
 ```bash
-cd src
 docker-compose up -d --build
 ```
 
@@ -61,14 +64,14 @@ The API will be available at `http://localhost:7001`.
 
 ### 1. Configuration
 
-**API (`CQRSSolution.Api/appsettings.json`):**
+**API (`src/CQRSSolution.Api/appsettings.json`):**
 
 Update the connection strings and Service Bus settings:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true"
   },
   "AzureServiceBus": {
     "ConnectionString": "<YOUR_SERVICE_BUS_CONNECTION_STRING>",
@@ -77,7 +80,7 @@ Update the connection strings and Service Bus settings:
 }
 ```
 
-**Azure Functions (`CQRSSolution.OutboxProcessor.AzureFunctions/local.settings.json`):**
+**Azure Functions (`src/CQRSSolution.OutboxProcessor.AzureFunctions/local.settings.json`):**
 
 If running the serverless outbox processor:
 
@@ -87,7 +90,7 @@ If running the serverless outbox processor:
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "SqlDatabaseConnectionString": "Server=(localdb)\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+    "SqlDatabaseConnectionString": "Server=(localdb)\\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true",
     "ServiceBus:ConnectionString": "<YOUR_SERVICE_BUS_CONNECTION_STRING>"
   }
 }
@@ -130,5 +133,5 @@ The solution includes both unit and integration tests.
 dotnet test
 ```
 
-- **Unit Tests**: `CQRSSolution.UnitTests` focuses on domain logic and individual components.
-- **Integration Tests**: `CQRSSolution.IntegrationTests` uses `WebApplicationFactory` to test the full pipeline including database interactions.
+- **Unit Tests**: `tests/CQRSSolution.UnitTests` focuses on domain logic and individual components.
+- **Integration Tests**: `tests/CQRSSolution.IntegrationTests` uses `WebApplicationFactory` to test the full pipeline including database interactions.

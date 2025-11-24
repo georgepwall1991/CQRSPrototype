@@ -13,7 +13,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: CQRSSolution.Api/Dockerfile
+      dockerfile: src/CQRSSolution.Api/Dockerfile
     container_name: cqrssolution-api
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CQRSSolutionDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
@@ -27,7 +27,7 @@ services:
   outbox-processor:
     build:
       context: .
-      dockerfile: CQRSSolution.OutboxProcessor.AzureFunctions/Dockerfile
+      dockerfile: src/CQRSSolution.OutboxProcessor.AzureFunctions/Dockerfile
     container_name: cqrssolution-func
     environment:
       - AzureWebJobsStorage=UseDevelopmentStorage=true
