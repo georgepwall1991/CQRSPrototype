@@ -1,137 +1,103 @@
-# CQRSSolution
+# Enterprise .NET 10 Reference Architecture 🚀
 
-A robust .NET solution demonstrating **Clean Architecture** and **CQRS** (Command Query Responsibility Segregation) principles. This project serves as a reference implementation for building scalable, maintainable, and testable enterprise applications using modern .NET technologies.
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4.svg?style=flat&logo=dotnet)](https://dotnet.microsoft.com/download)
+[![Build Status](https://github.com/yourusername/CQRSSolution/actions/workflows/dotnet.yml/badge.svg)](https://github.com/yourusername/CQRSSolution/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?style=flat&logo=docker)](https://www.docker.com/)
 
-## 🚀 Features
+A production-ready, high-performance reference implementation demonstrating **Clean Architecture**, **CQRS**, and **Domain-Driven Design (DDD)** using the latest **.NET 10**.
 
-- **CQRS Pattern**: Segregation of read (Queries) and write (Commands) operations using **MediatR**.
-- **Clean Architecture**: Strict separation of concerns with distinct layers (Api, Application, Domain, Infrastructure).
-- **Transactional Outbox Pattern**: Ensures reliable event delivery by atomically saving domain events with business data.
-- **Specification Pattern**: Encapsulates query logic to create reusable and testable query specifications.
-- **Repository & Unit of Work**: Abstraction over data access to ensure transactional integrity.
-- **Dual Outbox Processing**: Flexible implementation offering two ways to process outbox messages:
-  - **In-Process**: Using a .NET `BackgroundService`.
-  - **Serverless**: Using an **Azure Function** for independent scaling.
-- **Domain Events**: Decoupled business logic using internal domain events.
-- **Validation**: Request validation using **FluentValidation**.
-- **Azure Service Bus**: Integration for asynchronous messaging.
-- **API Versioning**: Supports API versioning (default v1.0).
-- **Observability**: OpenTelemetry tracing and metrics integrated.
-- **Resilience**: EF Core connection retry policies.
-- **Security**: JWT Authentication infrastructure.
+Designed to be the perfect starting point for building scalable, maintainable, and testable enterprise applications.
 
-## 🏗 Architecture
+---
 
-The solution is organized into the following folder structure:
+## 🌟 Why Use This Template?
 
-- **`src/`**: Contains the application source code.
-  - **`CQRSSolution.Api`**: The entry point (REST API). Handles HTTP requests and dispatches commands/queries.
-  - **`CQRSSolution.Application`**: Contains business logic, commands, queries, handlers, validators, and interfaces. Depends only on the Domain.
-  - **`CQRSSolution.Domain`**: The core of the solution. Contains entities, value objects, enums, and domain events. No external dependencies.
-  - **`CQRSSolution.Infrastructure`**: Implements interfaces defined in Application. Handles data access (EF Core), messaging (Azure Service Bus), and background processing.
-  - **`CQRSSolution.OutboxProcessor.AzureFunctions`**: A separate Azure Functions project for processing the Outbox table in a serverless environment.
-- **`tests/`**: Contains the test projects.
-  - **`CQRSSolution.UnitTests`**: Unit tests for domain and application logic.
-  - **`CQRSSolution.IntegrationTests`**: End-to-end integration tests using `WebApplicationFactory`.
+Building enterprise-grade software is hard. This repository provides a battle-tested foundation so you don't have to start from scratch.
 
-## 🛠 Technologies
+*   **🔥 Modern Stack**: Built on the bleeding edge with **.NET 10** and C# 13.
+*   **🏗️ Scalable Architecture**: Implements **CQRS** to separate reads from writes, allowing for independent scaling and optimization.
+*   **🛡️ Reliable Messaging**: Features the **Transactional Outbox Pattern** to ensure zero data loss when publishing domain events.
+*   **⚡ Dual Processing Modes**: flexible Outbox processing via either a simple **Background Service** or scalable **Azure Functions**.
+*   **🧪 Test-Driven**: Comes with a comprehensive suite of **Unit** and **Integration** tests using xUnit and Testcontainers-ready architecture.
 
-- **.NET 10** (or latest supported version)
-- **Entity Framework Core** (SQL Server)
-- **MediatR**
-- **Azure Service Bus**
-- **Azure Functions**
-- **FluentValidation**
-- **xUnit** (Integration & Unit Tests)
+## ✨ Key Features
 
-## 📋 Prerequisites
+| Feature | Description |
+| :--- | :--- |
+| **Clean Architecture** | Strict separation of concerns (Api -> Application -> Domain <- Infrastructure). |
+| **CQRS** | Command Query Responsibility Segregation using **MediatR**. |
+| **Domain-Driven Design** | Rich domain models, Value Objects, and decoupled Domain Events. |
+| **Reliability** | **Transactional Outbox Pattern** for atomic database operations and event publishing. |
+| **Performance** | **Specification Pattern** for efficient, reusable, and testable queries. |
+| **Validation** | Automatic request validation pipeline using **FluentValidation**. |
+| **Cloud-Ready** | Native integration with **Azure Service Bus** and **Azure Functions**. |
+| **Observability** | Built-in **OpenTelemetry** tracing and metrics. |
+| **Dockerized** | Full `docker-compose` support for instant local development. |
 
-- [.NET SDK](https://dotnet.microsoft.com/download)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB or Docker)
-- [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/) (Namespace & Queue/Topic) or an emulator.
+## 🚀 Quick Start
 
-## ⚙️ Getting Started
+Get up and running in seconds.
 
-### 🐳 Docker Support
+### Prerequisites
+*   [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-You can run the entire solution (API + SQL Server + Outbox Processor) using Docker Compose:
+### One-Command Launch
+We've included a helper script to spin up the API, SQL Server, and the Outbox Processor automatically.
 
 ```bash
-docker-compose up -d --build
+./start.sh
 ```
 
-The API will be available at `http://localhost:7001`.
+Once started:
+*   **API & Swagger**: [http://localhost:7001/swagger](http://localhost:7001/swagger)
+*   **Health Check**: [http://localhost:7001/health](http://localhost:7001/health)
 
-### 1. Configuration
+## 🛠️ Technology Stack
 
-**API (`src/CQRSSolution.Api/appsettings.json`):**
+*   **Core**: .NET 10, C# 13
+*   **Web**: ASP.NET Core Web API
+*   **Data**: Entity Framework Core (SQL Server)
+*   **Messaging**: Azure Service Bus, MediatR
+*   **Compute**: Azure Functions (Isolated Worker)
+*   **Testing**: xUnit, FluentAssertions, Moq, WebApplicationFactory
 
-Update the connection strings and Service Bus settings:
+## 🏗️ Architecture
 
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-  },
-  "AzureServiceBus": {
-    "ConnectionString": "<YOUR_SERVICE_BUS_CONNECTION_STRING>",
-    "TopicName": "orders-topic"
-  }
-}
-```
+The solution follows the principles of Clean Architecture. For a deep dive into the dependency injection strategies and persistence patterns, please read our [**Detailed Architecture Documentation**](docs/ARCHITECTURE.md).
 
-**Azure Functions (`src/CQRSSolution.OutboxProcessor.AzureFunctions/local.settings.json`):**
+### Folder Structure
 
-If running the serverless outbox processor:
+*   **`src/CQRSSolution.Api`**: The REST API entry point.
+*   **`src/CQRSSolution.Application`**: Business logic, use cases (Commands/Queries).
+*   **`src/CQRSSolution.Domain`**: Enterprise logic, Entities, and Domain Events.
+*   **`src/CQRSSolution.Infrastructure`**: Database, Service Bus, and external adapters.
+*   **`src/CQRSSolution.OutboxProcessor.AzureFunctions`**: Serverless worker for event processing.
 
-```json
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "SqlDatabaseConnectionString": "Server=(localdb)\\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true",
-    "ServiceBus:ConnectionString": "<YOUR_SERVICE_BUS_CONNECTION_STRING>"
-  }
-}
-```
+## 🏃‍♂️ Manual Setup (No Docker)
 
-### 2. Database Setup
+If you prefer running locally without Docker Compose:
 
-Apply the Entity Framework Core migrations to create the database schema:
+1.  **Configure Connection Strings**: Update `appsettings.json` in `src/CQRSSolution.Api` with your local SQL Server and Service Bus credentials.
+2.  **Apply Migrations**:
+    ```bash
+    dotnet tool install --global dotnet-ef
+    cd src/CQRSSolution.Infrastructure
+    dotnet ef database update --startup-project ../CQRSSolution.Api
+    ```
+3.  **Run API**:
+    ```bash
+    dotnet run --project src/CQRSSolution.Api
+    ```
+4.  **Run Tests**:
+    ```bash
+    dotnet test
+    ```
 
-```bash
-dotnet tool install --global dotnet-ef
-cd src/CQRSSolution.Infrastructure
-dotnet ef database update --startup-project ../CQRSSolution.Api
-```
+## 🤝 Contributing
 
-### 3. Running the Application
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-**Run the API:**
+## 📄 License
 
-```bash
-cd src/CQRSSolution.Api
-dotnet run
-```
-The API will be available at `https://localhost:7001` (or configured port). Swagger UI is available at `/swagger`.
-
-**Run the Azure Function (Optional):**
-
-```bash
-cd src/CQRSSolution.OutboxProcessor.AzureFunctions
-func start
-```
-
-## 🧪 Testing
-
-The solution includes both unit and integration tests.
-
-**Run all tests:**
-
-```bash
-dotnet test
-```
-
-- **Unit Tests**: `tests/CQRSSolution.UnitTests` focuses on domain logic and individual components.
-- **Integration Tests**: `tests/CQRSSolution.IntegrationTests` uses `WebApplicationFactory` to test the full pipeline including database interactions.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

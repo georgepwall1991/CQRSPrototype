@@ -17,7 +17,7 @@ public interface ISpecification<T>
     /// <summary>
     ///     Gets the list of include expressions for eager loading related entities.
     /// </summary>
-    List<Expression<Func<T, object>>> Includes { get; }
+    List<Expression<Func<T, object?>>> Includes { get; }
 
     /// <summary>
     ///     Gets the list of string-based include paths for eager loading.
@@ -28,12 +28,12 @@ public interface ISpecification<T>
     /// <summary>
     ///     Gets the expression for ordering entities in ascending order.
     /// </summary>
-    Expression<Func<T, object>>? OrderBy { get; }
+    Expression<Func<T, object?>>? OrderBy { get; }
 
     /// <summary>
     ///     Gets the expression for ordering entities in descending order.
     /// </summary>
-    Expression<Func<T, object>>? OrderByDescending { get; }
+    Expression<Func<T, object?>>? OrderByDescending { get; }
 
     /// <summary>
     ///     Gets the number of items to take for pagination (page size).

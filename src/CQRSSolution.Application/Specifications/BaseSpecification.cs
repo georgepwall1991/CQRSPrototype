@@ -32,16 +32,16 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     public Expression<Func<T, bool>>? Criteria { get; protected set; }
 
     /// <inheritdoc />
-    public List<Expression<Func<T, object>>> Includes { get; } = new();
+    public List<Expression<Func<T, object?>>> Includes { get; } = new();
 
     /// <inheritdoc />
     public List<string> IncludeStrings { get; } = new();
 
     /// <inheritdoc />
-    public Expression<Func<T, object>>? OrderBy { get; private set; }
+    public Expression<Func<T, object?>>? OrderBy { get; private set; }
 
     /// <inheritdoc />
-    public Expression<Func<T, object>>? OrderByDescending { get; private set; }
+    public Expression<Func<T, object?>>? OrderByDescending { get; private set; }
 
     /// <inheritdoc />
     public int Take { get; private set; }
@@ -56,7 +56,7 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     ///     Adds an include expression for eager loading a related entity or collection.
     /// </summary>
     /// <param name="includeExpression">The expression representing the navigation property to include.</param>
-    protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
+    protected virtual void AddInclude(Expression<Func<T, object?>> includeExpression)
     {
         Includes.Add(includeExpression);
     }
@@ -75,7 +75,7 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     ///     Applies ordering in ascending order based on the specified expression.
     /// </summary>
     /// <param name="orderByExpression">The expression representing the property to order by.</param>
-    protected virtual void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
+    protected virtual void ApplyOrderBy(Expression<Func<T, object?>> orderByExpression)
     {
         OrderBy = orderByExpression;
         OrderByDescending = null; // Clear descending order if ascending is set
@@ -85,7 +85,7 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     ///     Applies ordering in descending order based on the specified expression.
     /// </summary>
     /// <param name="orderByDescendingExpression">The expression representing the property to order by in descending order.</param>
-    protected virtual void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
+    protected virtual void ApplyOrderByDescending(Expression<Func<T, object?>> orderByDescendingExpression)
     {
         OrderByDescending = orderByDescendingExpression;
         OrderBy = null; // Clear ascending order if descending is set
