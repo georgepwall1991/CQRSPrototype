@@ -1,0 +1,41 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: cqrssolution-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+
+  api:
+    build:
+      context: .
+      dockerfile: CQRSSolution.Api/Dockerfile
+    container_name: cqrssolution-api
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CQRSSolutionDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+      - AzureServiceBus__ConnectionString=Endpoint=sb://emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=123
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "7001:80"
+    depends_on:
+      - sqlserver
+
+  outbox-processor:
+    build:
+      context: .
+      dockerfile: CQRSSolution.OutboxProcessor.AzureFunctions/Dockerfile
+    container_name: cqrssolution-func
+    environment:
+      - AzureWebJobsStorage=UseDevelopmentStorage=true
+      - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
+      - SqlDatabaseConnectionString=Server=sqlserver;Database=CQRSSolutionDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+      - ServiceBus__ConnectionString=Endpoint=sb://emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=123
+    depends_on:
+      - sqlserver
+
+volumes:
+  sqlvolume:
