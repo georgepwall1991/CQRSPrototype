@@ -15,7 +15,7 @@ Designed to be the perfect starting point for building scalable, maintainable, a
 
 Building enterprise-grade software is hard. This repository provides a battle-tested foundation so you don't have to start from scratch.
 
-*   **🔥 Modern Stack**: Built on the bleeding edge with **.NET 10** and C# 13.
+*   **🔥 Modern Stack**: Built on the bleeding edge with **.NET 10** and C# 14.
 *   **🏗️ Scalable Architecture**: Implements **CQRS** to separate reads from writes, allowing for independent scaling and optimization.
 *   **🛡️ Reliable Messaging**: Features the **Transactional Outbox Pattern** to ensure zero data loss when publishing domain events.
 *   **⚡ Dual Processing Modes**: flexible Outbox processing via either a simple **Background Service** or scalable **Azure Functions**.
@@ -55,7 +55,7 @@ Once started:
 
 ## 🛠️ Technology Stack
 
-*   **Core**: .NET 10, C# 13
+*   **Core**: .NET 10, C# 14
 *   **Web**: ASP.NET Core Web API
 *   **Data**: Entity Framework Core (SQL Server)
 *   **Messaging**: Azure Service Bus, MediatR
