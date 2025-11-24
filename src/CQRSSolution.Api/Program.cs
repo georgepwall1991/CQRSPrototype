@@ -1,7 +1,8 @@
 using CQRSSolution.Application;
 using CQRSSolution.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi; // Assuming OpenApiInfo is here or available via implicit using from Swashbuckle?
 using System.Reflection;
-using Microsoft.OpenApi;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -30,6 +31,20 @@ builder.Logging.AddOpenTelemetry(options =>
     options.AddOtlpExporter();
 });
 
+// Configure Authentication
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        // In a real scenario, these would be loaded from Configuration
+        options.Authority = builder.Configuration["Authentication:Authority"] ?? "https://demo.duendesoftware.com";
+        options.Audience = builder.Configuration["Authentication:Audience"] ?? "api";
+        options.RequireHttpsMetadata = builder.Environment.IsProduction();
+    });
+
 // Register Application Layer services
 builder.Services.AddApplicationServices();
 
@@ -43,7 +58,44 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    /* 
+    // TODO: Fix namespace resolution for OpenApiSecurityScheme (Microsoft.OpenApi.Models issue)
     options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "CQRSSolution API",
+        Description = "API for managing orders using CQRS and Outbox Pattern."
+    });
+
+    // Add JWT Bearer definition to Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+    */
+    
+    // Minimal Swagger doc
+    options.SwaggerDoc("v1", new OpenApiInfo // Trying full qualification? Or just OpenApiInfo
     {
         Version = "v1",
         Title = "CQRSSolution API",
@@ -74,6 +126,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication(); // Enable Authentication Middleware
 
 app.UseAuthorization();
 
