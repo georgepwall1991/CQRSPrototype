@@ -17,6 +17,7 @@
     <PackageReference Include="FluentAssertions" Version="8.8.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
@@ -31,6 +32,8 @@
   <ItemGroup>
     <ProjectReference Include="..\CQRSSolution.Application\CQRSSolution.Application.csproj" />
     <ProjectReference Include="..\CQRSSolution.Domain\CQRSSolution.Domain.csproj" />
+    <ProjectReference Include="..\CQRSSolution.Infrastructure\CQRSSolution.Infrastructure.csproj" />
+    <ProjectReference Include="..\CQRSSolution.Api\CQRSSolution.Api.csproj" />
   </ItemGroup>
 
 </Project>
