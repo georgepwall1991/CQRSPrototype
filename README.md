@@ -1,7 +1,7 @@
 # Enterprise .NET 10 Reference Architecture 🚀
 
 [![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4.svg?style=flat&logo=dotnet)](https://dotnet.microsoft.com/download)
-[![Build Status](https://github.com/georgepwall1991/CQRSSolution/actions/workflows/dotnet.yml/badge.svg)](https://github.com/georgepwall1991/CQRSSolution/actions)
+[![Build Status](https://github.com/georgepwall1991/CQRSPrototype/actions/workflows/dotnet.yml/badge.svg)](https://github.com/georgepwall1991/CQRSSolution/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?style=flat&logo=docker)](https://www.docker.com/)
 

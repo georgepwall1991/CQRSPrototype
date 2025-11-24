@@ -19,8 +19,8 @@ jobs:
         dotnet-version: 10.0.x
         include-prerelease: true
     - name: Restore dependencies
-      run: dotnet restore src/CQRSSolution.sln
+      run: dotnet restore CQRSSolution.sln
     - name: Build
-      run: dotnet build src/CQRSSolution.sln --no-restore
+      run: dotnet build CQRSSolution.sln --no-restore
     - name: Test
-      run: dotnet test src/CQRSSolution.sln --no-build --verbosity normal
+      run: dotnet test CQRSSolution.sln --no-build --verbosity normal
