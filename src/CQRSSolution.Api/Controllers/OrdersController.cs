@@ -4,6 +4,7 @@ using CQRSSolution.Application.Queries.GetCustomerOrderById;
 using CQRSSolution.Application.Queries.GetCustomerOrdersByStatus;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 
 namespace CQRSSolution.Api.Controllers;
 
@@ -11,6 +12,7 @@ namespace CQRSSolution.Api.Controllers;
 /// API controller for managing orders in the system.
 /// </summary>
 [ApiController]
+[ApiVersion("1.0")]
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
