@@ -1,77 +1,119 @@
-# ProjectName: .NET 9 CQRS Prototype
+# CQRSSolution
 
-## Overview
+A robust .NET solution demonstrating **Clean Architecture** and **CQRS** (Command Query Responsibility Segregation) principles. This project serves as a reference implementation for building scalable, maintainable, and testable enterprise applications using modern .NET technologies.
 
-This project is a prototype .NET 9 backend application demonstrating a clean architecture approach with CQRS,
-event-driven principles using Azure Service Bus, and reliable event publishing via the Transactional Outbox pattern.
+## 🚀 Features
 
-The primary goal is to showcase ACID compliance across multiple database operations triggered by a single initial
-command, with events only being published to the bus after the successful completion of the encompassing database
-transaction.
+- **CQRS Pattern**: Segregation of read (Queries) and write (Commands) operations using **MediatR**.
+- **Clean Architecture**: Strict separation of concerns with distinct layers (Api, Application, Domain, Infrastructure).
+- **Transactional Outbox Pattern**: Ensures reliable event delivery by atomically saving domain events with business data.
+- **Specification Pattern**: Encapsulates query logic to create reusable and testable query specifications.
+- **Repository & Unit of Work**: Abstraction over data access to ensure transactional integrity.
+- **Dual Outbox Processing**: Flexible implementation offering two ways to process outbox messages:
+   - **In-Process**: Using a .NET `BackgroundService`.
+   - **Serverless**: Using an **Azure Function** for independent scaling.
+- **Domain Events**: Decoupled business logic using internal domain events.
+- **Validation**: Request validation using **FluentValidation**.
+- **Azure Service Bus**: Integration for asynchronous messaging.
 
-## Prerequisites
+## 🏗 Architecture
 
-- .NET 9 SDK
-- MSSQL Server (or SQL Server Express/Developer Edition)
-- Azure Service Bus (or emulator, e.g., Azure Functions Core Tools with local storage emulator)
-- (Add any other specific tools or SDKs required)
+The solution is organized into the following projects:
 
-## Build Instructions
+- **`CQRSSolution.Api`**: The entry point (REST API). Handles HTTP requests and dispatches commands/queries.
+- **`CQRSSolution.Application`**: Contains business logic, commands, queries, handlers, validators, and interfaces. Depends only on the Domain.
+- **`CQRSSolution.Domain`**: The core of the solution. Contains entities, value objects, enums, and domain events. No external dependencies.
+- **`CQRSSolution.Infrastructure`**: Implements interfaces defined in Application. Handles data access (EF Core), messaging (Azure Service Bus), and background processing.
+- **`CQRSSolution.OutboxProcessor.AzureFunctions`**: A separate Azure Functions project for processing the Outbox table in a serverless environment.
 
-```bash
-# Navigate to the solution directory
-cd path/to/solution
+## 🛠 Technologies
 
-# Restore dependencies
-dotnet restore
+- **.NET 8** (or latest supported version)
+- **Entity Framework Core** (SQL Server)
+- **MediatR**
+- **Azure Service Bus**
+- **Azure Functions**
+- **FluentValidation**
+- **xUnit** (Integration & Unit Tests)
 
-# Build the solution
-dotnet build
+## 📋 Prerequisites
+
+- [.NET SDK](https://dotnet.microsoft.com/download)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (LocalDB or Docker)
+- [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/) (Namespace & Queue/Topic) or an emulator.
+
+## ⚙️ Getting Started
+
+### 1. Configuration
+
+**API (`CQRSSolution.Api/appsettings.json`):**
+
+Update the connection strings and Service Bus settings:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+  "AzureServiceBus": {
+    "ConnectionString": "<YOUR_SERVICE_BUS_CONNECTION_STRING>",
+    "TopicName": "orders-topic"
+  }
+}
 ```
 
-## Running the Application
+**Azure Functions (`CQRSSolution.OutboxProcessor.AzureFunctions/local.settings.json`):**
 
-1. **Configure Connection Strings:**
-    - Update `appsettings.json` (or `appsettings.Development.json`) in `ProjectName.Api` with your MSSQL Server
-      connection string.
-    - Update configuration with your Azure Service Bus connection string and queue/topic name.
-2. **Apply EF Core Migrations:**
+If running the serverless outbox processor:
 
-    ```bash
-    # Navigate to the Infrastructure project directory
-    cd path/to/ProjectName.Infrastructure
-
-    # Apply migrations
-    dotnet ef database update --startup-project ../ProjectName.Api
-    ```
-
-3. **Run the API:**
-
-    ```bash
-    # Navigate to the API project directory
-    cd path/to/ProjectName.Api
-
-    # Run the application
-    dotnet run
-    ```
-
-   The API will typically be available at `https://localhost:port` or `http://localhost:port`.
-
-## Testing
-
-(Details on how to run tests - see `TESTING_STRATEGY.md` for more info)
-
-```bash
-# Navigate to the solution directory or test project directory
-# dotnet test
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "SqlDatabaseConnectionString": "Server=(localdb)\mssqllocaldb;Database=CQRSSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true",
+    "ServiceBus:ConnectionString": "<YOUR_SERVICE_BUS_CONNECTION_STRING>"
+  }
+}
 ```
 
-## Demo Goals
+### 2. Database Setup
 
-This prototype aims to demonstrate:
+Apply the Entity Framework Core migrations to create the database schema:
 
-- Implementation of CQRS with MediatR.
-- Transactional outbox pattern for reliable event publishing.
-- ACID compliance for commands involving multiple database operations.
-- Eventual consistency via Azure Service Bus.
-- Clean architecture principles in a .NET 9 application.
+```bash
+dotnet tool install --global dotnet-ef
+cd src/CQRSSolution.Infrastructure
+dotnet ef database update --startup-project ../CQRSSolution.Api
+```
+
+### 3. Running the Application
+
+**Run the API:**
+
+```bash
+cd src/CQRSSolution.Api
+dotnet run
+```
+The API will be available at `https://localhost:7001` (or configured port). Swagger UI is available at `/swagger`.
+
+**Run the Azure Function (Optional):**
+
+```bash
+cd src/CQRSSolution.OutboxProcessor.AzureFunctions
+func start
+```
+
+## 🧪 Testing
+
+The solution includes both unit and integration tests.
+
+**Run all tests:**
+
+```bash
+dotnet test
+```
+
+- **Unit Tests**: `CQRSSolution.UnitTests` focuses on domain logic and individual components.
+- **Integration Tests**: `CQRSSolution.IntegrationTests` uses `WebApplicationFactory` to test the full pipeline including database interactions.
