@@ -15,6 +15,10 @@ A robust .NET solution demonstrating **Clean Architecture** and **CQRS** (Comman
 - **Domain Events**: Decoupled business logic using internal domain events.
 - **Validation**: Request validation using **FluentValidation**.
 - **Azure Service Bus**: Integration for asynchronous messaging.
+- **API Versioning**: Supports API versioning (default v1.0).
+- **Observability**: OpenTelemetry tracing and metrics integrated.
+- **Resilience**: EF Core connection retry policies.
+- **Security**: JWT Authentication infrastructure.
 
 ## 🏗 Architecture
 
@@ -43,6 +47,17 @@ The solution is organized into the following projects:
 - [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/) (Namespace & Queue/Topic) or an emulator.
 
 ## ⚙️ Getting Started
+
+### 🐳 Docker Support
+
+You can run the entire solution (API + SQL Server + Outbox Processor) using Docker Compose:
+
+```bash
+cd src
+docker-compose up -d --build
+```
+
+The API will be available at `http://localhost:7001`.
 
 ### 1. Configuration
 
